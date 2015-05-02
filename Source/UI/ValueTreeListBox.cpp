@@ -171,13 +171,13 @@ void ValueTreeListBox::valueTreeChildAdded (ValueTree& parentTree, ValueTree& ch
 {
 }
 
-void valueTreeChildRemoved (ValueTree& parentTree,
+void ValueTreeListBox::valueTreeChildRemoved (ValueTree& parentTree,
                             ValueTree& childWhichHasBeenRemoved,
                             int indexFromWhichChildWasRemoved)
 {
 }
 
-void valueTreeChildOrderChanged (ValueTree& parentTreeWhoseChildrenHaveMoved, int oldIndex, int newIndex)
+void ValueTreeListBox::valueTreeChildOrderChanged (ValueTree& parentTreeWhoseChildrenHaveMoved, int oldIndex, int newIndex)
 {
 }
 
