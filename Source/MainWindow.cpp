@@ -11,67 +11,72 @@
 #include "MainWindow.h"
 #include "UI/StackHeaderComponent.h"
 #include "UI/StackNavigationList.h"
-#include "UI/SlidingStackComponent.h"
+#include "UI/AnimatedStackComponent.h"
+#include "UI/StackAnimator.h"
+#include "UI/SlideAnimator.h"
 #include "UI/ValueTreeStackPanel.h"
 
 //==============================================================================
 
 class TestComponent	:	public Component
 {
-public:
+    public:
 
-	TestComponent ()
-	{
-		addAndMakeVisible (&header);
-		addAndMakeVisible (&stack);
-		addAndMakeVisible (&nav);
-		header.setComponentID("Header");
-		stack.setComponentID("Stack");
-		nav.setComponentID("Nav");
+        TestComponent () 
+        {
+            addAndMakeVisible (&header);
+            // slideAnimator = new SlideAnimator();
+            addAndMakeVisible (stack = new AnimatedStackComponent (new SlideAnimator()));
+            addAndMakeVisible (&nav);
+            header.setComponentID("Header");
+            stack->setComponentID("Stack");
+            nav.setComponentID("Nav");
 
-		header.setTargetStack (&stack);
-		nav.setTargetStack (&stack);
+            header.setTargetStack (stack);
+            nav.setTargetStack (stack);
 
-		header.setInterceptsMouseClicks (false,true);
+            header.setInterceptsMouseClicks (false,true);
 
-		nav.setBounds ("0,0,150,parent.height");
-		header.setBounds ("Nav.right,0,parent.width,40");
-		stack.setBounds ("Header.left,Header.bottom,parent.width,parent.height");
+            nav.setBounds ("0,0,150,parent.height");
+            header.setBounds ("Nav.right,0,parent.width,40");
+            stack->setBounds ("Header.left,Header.bottom,parent.width,parent.height");
 
-		ScopedPointer<XmlElement> xml = XmlDocument::parse (BinaryData::StackDemo_jucer);
-		if (xml != 0)
-		{
-			ValueTreeStackPanel* rootPanel = new ValueTreeStackPanel(ValueTree::fromXml (*xml));
-			stack.push (rootPanel,true,true,false);
-		}
+            ScopedPointer<XmlElement> xml = XmlDocument::parse (BinaryData::StackDemo_jucer);
+            if (xml != 0)
+            {
+                ValueTreeStackPanel* rootPanel = new ValueTreeStackPanel(ValueTree::fromXml (*xml));
+                stack->push (rootPanel,true,true,false);
+            }
 
-	}
+        }
 
-	~TestComponent ()
-	{
-	}
+        ~TestComponent ()
+        {
+        }
 
-private:
+    private:
 
-	StackHeaderComponent header;
-	StackNavigationList nav;
-	SlidingStackComponent stack;
+        StackHeaderComponent header;
+        StackNavigationList nav;
+        ScopedPointer <AnimatedStackComponent> stack;
+        SlideAnimator::Ptr slideAnimator;
+        
 };
 
 
 
 //==============================================================================
-MainAppWindow::MainAppWindow()
-    : DocumentWindow (JUCEApplication::getInstance()->getApplicationName(),
-                      Colours::lightgrey,
-                      DocumentWindow::allButtons)
+    MainAppWindow::MainAppWindow()
+: DocumentWindow (JUCEApplication::getInstance()->getApplicationName(),
+        Colours::lightgrey,
+        DocumentWindow::allButtons)
 {
     centreWithSize (500, 400);
     setVisible (true);
 
-	TestComponent* test = new TestComponent ();
-	setContentOwned (test,false);
-	setResizable (true,false);
+    TestComponent* test = new TestComponent ();
+    setContentOwned (test,false);
+    setResizable (true,false);
 
 }
 
