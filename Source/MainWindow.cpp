@@ -25,8 +25,8 @@ class TestComponent	:	public Component
         TestComponent () 
         {
             addAndMakeVisible (&header);
-            // slideAnimator = new SlideAnimator();
-            addAndMakeVisible (stack = new AnimatedStackComponent (new SlideAnimator()));
+            slideAnimator = new SlideAnimator();
+            addAndMakeVisible (stack = new AnimatedStackComponent (slideAnimator));
             addAndMakeVisible (&nav);
             header.setComponentID("Header");
             stack->setComponentID("Stack");

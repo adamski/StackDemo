@@ -26,10 +26,15 @@ AnimatedStackComponent::~AnimatedStackComponent ()
 {
 }
 
+void AnimatedStackComponent::setDefaultStackAnimator(StackAnimator* defaultStackAnimator)
+{
+    stackAnimator = defaultStackAnimator;
+}
+
 void AnimatedStackComponent::refreshLayout ()
 {
     
-    for (int i=0; i<getStackSize (); i++)
+    for (int i = 0; i < getStackSize (); ++i)
     {
         Component* panel = getContentComponentAtIndex (i);
         if (i == getStackFocusIndex())

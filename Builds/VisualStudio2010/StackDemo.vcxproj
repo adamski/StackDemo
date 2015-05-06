@@ -123,6 +123,7 @@
     </Bscmake>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Source\UI\AnimatedStackComponent.cpp"/>
     <ClCompile Include="..\..\Source\UI\StackNavigationList.cpp"/>
     <ClCompile Include="..\..\Source\UI\ValueTreeListBox.cpp"/>
     <ClCompile Include="..\..\Source\UI\ValueTreeStackPanel.cpp"/>
@@ -362,6 +363,9 @@
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\JUCE\modules\juce_data_structures\values\juce_ValueTree.cpp">
+      <ExcludedFromBuild>true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\JUCE\modules\juce_data_structures\values\juce_ValueTreeSynchroniser.cpp">
       <ExcludedFromBuild>true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\..\..\..\JUCE\modules\juce_data_structures\undomanager\juce_UndoManager.cpp">
@@ -888,6 +892,9 @@
     <ClCompile Include="..\..\..\..\JUCE\modules\juce_gui_basics\juce_gui_basics.cpp"/>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Source\UI\SlideAnimator.h"/>
+    <ClInclude Include="..\..\Source\UI\StackAnimator.h"/>
+    <ClInclude Include="..\..\Source\UI\AnimatedStackComponent.h"/>
     <ClInclude Include="..\..\Source\UI\StackNavigationList.h"/>
     <ClInclude Include="..\..\Source\UI\ValueTreeListBox.h"/>
     <ClInclude Include="..\..\Source\UI\ValueTreeStackPanel.h"/>
@@ -1012,6 +1019,7 @@
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_core\juce_core.h"/>
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_data_structures\values\juce_Value.h"/>
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_data_structures\values\juce_ValueTree.h"/>
+    <ClInclude Include="..\..\..\..\JUCE\modules\juce_data_structures\values\juce_ValueTreeSynchroniser.h"/>
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_data_structures\undomanager\juce_UndoableAction.h"/>
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_data_structures\undomanager\juce_UndoManager.h"/>
     <ClInclude Include="..\..\..\..\JUCE\modules\juce_data_structures\app_properties\juce_ApplicationProperties.h"/>

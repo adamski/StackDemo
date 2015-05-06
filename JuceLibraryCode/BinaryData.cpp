@@ -107,6 +107,12 @@ static const unsigned char temp_binary_data_0[] =
 "    <GROUP id=\"WOWKMm\" name=\"Source\">\r\n"
 "      <GROUP id=\"J47tpH\" name=\"Resources\"/>\r\n"
 "      <GROUP id=\"SsfCI8\" name=\"UI\">\r\n"
+"        <FILE id=\"dHhBoS\" name=\"SlideAnimator.h\" compile=\"1\" resource=\"0\" file=\"Source/UI/SlideAnimator.h\"/>\r\n"
+"        <FILE id=\"Rpw94U\" name=\"StackAnimator.h\" compile=\"1\" resource=\"0\" file=\"Source/UI/StackAnimator.h\"/>\r\n"
+"        <FILE id=\"NudsEx\" name=\"AnimatedStackComponent.cpp\" compile=\"1\" resource=\"0\"\r\n"
+"              file=\"Source/UI/AnimatedStackComponent.cpp\"/>\r\n"
+"        <FILE id=\"E2oNUr\" name=\"AnimatedStackComponent.h\" compile=\"0\" resource=\"0\"\r\n"
+"              file=\"Source/UI/AnimatedStackComponent.h\"/>\r\n"
 "        <FILE id=\"QEdW1u\" name=\"StackNavigationList.cpp\" compile=\"1\" resource=\"0\"\r\n"
 "              file=\"Source\\UI\\StackNavigationList.cpp\"/>\r\n"
 "        <FILE id=\"T5yVMQ\" name=\"StackNavigationList.h\" compile=\"0\" resource=\"0\"\r\n"
@@ -166,7 +172,7 @@ const char* getNamedResource (const char* resourceNameUTF8, int& numBytes) throw
 
     switch (hash)
     {
-        case 0x44f06251:  numBytes = 8664; return StackDemo_jucer;
+        case 0x44f06251:  numBytes = 9174; return StackDemo_jucer;
         default: break;
     }
 

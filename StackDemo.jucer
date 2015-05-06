@@ -96,6 +96,12 @@
     <GROUP id="WOWKMm" name="Source">
       <GROUP id="J47tpH" name="Resources"/>
       <GROUP id="SsfCI8" name="UI">
+        <FILE id="dHhBoS" name="SlideAnimator.h" compile="1" resource="0" file="Source/UI/SlideAnimator.h"/>
+        <FILE id="Rpw94U" name="StackAnimator.h" compile="1" resource="0" file="Source/UI/StackAnimator.h"/>
+        <FILE id="NudsEx" name="AnimatedStackComponent.cpp" compile="1" resource="0"
+              file="Source/UI/AnimatedStackComponent.cpp"/>
+        <FILE id="E2oNUr" name="AnimatedStackComponent.h" compile="0" resource="0"
+              file="Source/UI/AnimatedStackComponent.h"/>
         <FILE id="QEdW1u" name="StackNavigationList.cpp" compile="1" resource="0"
               file="Source\UI\StackNavigationList.cpp"/>
         <FILE id="T5yVMQ" name="StackNavigationList.h" compile="0" resource="0"
