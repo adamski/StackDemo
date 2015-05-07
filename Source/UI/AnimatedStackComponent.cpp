@@ -10,12 +10,9 @@
 
 #include "AnimatedStackComponent.h"
 
-namespace AnimatedStackComponentIds
-{
-    static const Identifier stackAnimator ("StackAnimator");
-};
 
-AnimatedStackComponent::AnimatedStackComponent (StackAnimator* defaultStackAnimator) 
+
+AnimatedStackComponent::AnimatedStackComponent (const StackAnimator::Ptr & defaultStackAnimator) 
     :   StackComponent(), 
         stackAnimator (defaultStackAnimator)
 {
@@ -88,9 +85,9 @@ void AnimatedStackComponent::handleStackFocusChange (Component* newFocusContent,
 StackAnimator::Ptr AnimatedStackComponent::getStackAnimatorForComponent (Component *component) 
 {
     NamedValueSet & properties = component->getProperties();
-    if (properties.contains (AnimatedStackComponentIds::stackAnimator)) // also check for valid stackAnimator object
+    if (properties.contains (AnimatedStackHelpers::stackAnimatorId)) // also check for valid stackAnimator object
     {
-        var *animator = properties.getVarPointer (AnimatedStackComponentIds::stackAnimator); 
+        var *animator = properties.getVarPointer (AnimatedStackHelpers::stackAnimatorId); 
         StackAnimator::Ptr stackAnimator = dynamic_cast <StackAnimator *> (animator->getObject());
         return stackAnimator;
     }
@@ -98,6 +95,11 @@ StackAnimator::Ptr AnimatedStackComponent::getStackAnimatorForComponent (Compone
     {
         return getStackAnimator();  
     }
+}
+
+void AnimatedStackComponent::setStackAnimatorForComponent (StackAnimator::Ptr stackAnimator, Component *component) 
+{
+   component->getProperties().set (AnimatedStackHelpers::stackAnimatorId, var(stackAnimator));
 }
 
 StackAnimator::Ptr AnimatedStackComponent::getStackAnimator() 

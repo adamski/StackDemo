@@ -12,6 +12,8 @@
 #include "ValueTreeListBox.h"
 #include "StackHeaderComponent.h"
 #include "StackNavigationList.h"
+#include "AnimatedStackComponent.h"
+#include "SlideAnimator.h"
 
 class ValueTreeListProp	:	public PropertyComponent
 {
@@ -65,9 +67,9 @@ void ValueTreeStackPanel::paint (Graphics& g)
 	g.fillAll (Colours::grey);
 }
 
-StackComponent* ValueTreeStackPanel::getStack ()
+AnimatedStackComponent* ValueTreeStackPanel::getStack ()
 {
-	return StackComponent::findForContent (this);
+	return static_cast<AnimatedStackComponent*> (StackComponent::findForContent (this));
 }
 
 void ValueTreeStackPanel::pushAfter (Component* newComponent, bool autoFocus, bool animate)
@@ -92,7 +94,13 @@ void ValueTreeStackPanel::pop ()
 void ValueTreeStackPanel::valueTreeListBoxItemDoubleClicked (ValueTreeListBox* source, const MouseEvent& e, int index, const ValueTree& itemNode)
 {
 	ValueTreeStackPanel* nextPanel = new ValueTreeStackPanel (itemNode);
-	pushAfter (nextPanel,true,true);
+    if (index == 2)
+    {
+        SlideAnimator::Ptr slideAnimator = new SlideAnimator(350, 0.5, 1.0);
+        slideAnimator->setStackComponent(getStack());
+        AnimatedStackHelpers::setStackAnimatorForComponent(slideAnimator, nextPanel);
+    }
+    pushAfter (nextPanel,true,true);
 }
 
 void ValueTreeStackPanel::valueTreeListBoxItemClicked (ValueTreeListBox* source, const MouseEvent& e, int index, const ValueTree& itemNode)

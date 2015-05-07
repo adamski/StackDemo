@@ -13,6 +13,7 @@
 
 #include "StackComponent.h"
 #include "ValueTreeListBox.h"
+#include "AnimatedStackComponent.h"
 
 
 class ValueTreeStackPanel	:	public Component,
@@ -23,7 +24,7 @@ public:
 	ValueTreeStackPanel (const ValueTree& nodeToUse);
 	~ValueTreeStackPanel ();
 
-	StackComponent* getStack ();
+	AnimatedStackComponent* getStack ();
 
 	void paint (Graphics& g);
 

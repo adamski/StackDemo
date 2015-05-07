@@ -14,11 +14,22 @@
 #include "StackComponent.h"
 #include "StackAnimator.h"
 
+namespace AnimatedStackHelpers
+{
+    static const Identifier stackAnimatorId ("StackAnimator");
+
+    static void setStackAnimatorForComponent (StackAnimator::Ptr stackAnimator, Component *component) 
+    {
+        component->getProperties().set (AnimatedStackHelpers::stackAnimatorId, var(stackAnimator));
+    }
+
+};
+
 class AnimatedStackComponent	:	public StackComponent
 {
 public:
 
-	AnimatedStackComponent (StackAnimator* defaultStackAnimator);
+	AnimatedStackComponent (const StackAnimator::Ptr & defaultStackAnimator);
 	~AnimatedStackComponent ();
 
         void setDefaultStackAnimator(StackAnimator* defaultStackAnimator);
@@ -31,6 +42,7 @@ protected:
 	virtual void handleStackFocusChange (Component* newFocusContent, int newIndex, int oldIndex, bool animate);
 
         StackAnimator::Ptr getStackAnimatorForComponent (Component* component);
+        void setStackAnimatorForComponent (StackAnimator::Ptr stackAnimator, Component *component);
         StackAnimator::Ptr getStackAnimator();
 
 

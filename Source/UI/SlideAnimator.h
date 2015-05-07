@@ -25,7 +25,12 @@ public:
             endSpeed (1.0)
     {}
 
-    ~SlideAnimator() {}
+    SlideAnimator (int slideDuration, float startSpeed, float endSpeed)
+        :   StackAnimator(),
+            slideDuration (slideDuration),
+            startSpeed (startSpeed),
+            endSpeed (endSpeed)
+    {}
 
     void refreshLayout ()
     {
