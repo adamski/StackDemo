@@ -93,10 +93,11 @@ void ValueTreeStackPanel::pop ()
 
 void ValueTreeStackPanel::valueTreeListBoxItemDoubleClicked (ValueTreeListBox* source, const MouseEvent& e, int index, const ValueTree& itemNode)
 {
-	ValueTreeStackPanel* nextPanel = new ValueTreeStackPanel (itemNode);
+    ValueTreeStackPanel* nextPanel = new ValueTreeStackPanel (itemNode);
     if (index == 2)
     {
         SlideAnimator::Ptr slideAnimator = new SlideAnimator(350, 0.5, 1.0);
+        DBG ("Set new SlideAnimator");
         slideAnimator->setStackComponent(getStack());
         AnimatedStackHelpers::setStackAnimatorForComponent(slideAnimator, nextPanel);
     }

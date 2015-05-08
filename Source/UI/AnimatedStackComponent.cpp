@@ -28,24 +28,6 @@ void AnimatedStackComponent::setDefaultStackAnimator(StackAnimator* defaultStack
     stackAnimator = defaultStackAnimator;
 }
 
-void AnimatedStackComponent::refreshLayout ()
-{
-    
-    for (int i = 0; i < getStackSize (); ++i)
-    {
-        Component* panel = getContentComponentAtIndex (i);
-        if (i == getStackFocusIndex())
-        {
-            panel->setVisible (true);
-            panel->setBounds (0, 0, getWidth(), getHeight());
-        }
-        else
-        {
-            panel->setVisible (false);
-        }
-    }
-}
-
 
 void AnimatedStackComponent::handleContentComponentAdded (Component* newContent, int index, bool animate)
 {

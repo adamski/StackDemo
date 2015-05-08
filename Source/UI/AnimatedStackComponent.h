@@ -20,6 +20,7 @@ namespace AnimatedStackHelpers
 
     static void setStackAnimatorForComponent (StackAnimator::Ptr stackAnimator, Component *component) 
     {
+        stackAnimator->incReferenceCount(); // this prevents a crash when using 'Back' button on this component
         component->getProperties().set (AnimatedStackHelpers::stackAnimatorId, var(stackAnimator));
     }
 
@@ -36,7 +37,6 @@ public:
 
 protected:
 
-	virtual void refreshLayout ();
 	virtual void handleContentComponentAdded (Component* newContent, int index, bool animate);
 	virtual void handleContentComponentRemoved (Component* contentRemoved, int index, bool animate);
 	virtual void handleStackFocusChange (Component* newFocusContent, int newIndex, int oldIndex, bool animate);
