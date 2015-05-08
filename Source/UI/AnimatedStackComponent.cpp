@@ -60,6 +60,9 @@ void AnimatedStackComponent::handleStackFocusChange (Component* newFocusContent,
     }
     else 
     {
+        DBG ("newIndex: " << newIndex << ", oldIndex: " << oldIndex);
+        if (newIndex < oldIndex)  // if we're going backwards
+            newFocusContent = getContentComponentAtIndex(oldIndex); // set the newFocusContent to the previous component
         getStackAnimatorForComponent (newFocusContent)->animateStackFocusChange (newFocusContent, newIndex, oldIndex);
     }
 }

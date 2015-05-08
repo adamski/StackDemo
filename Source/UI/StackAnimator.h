@@ -19,7 +19,7 @@ public:
     typedef ReferenceCountedObjectPtr<StackAnimator> Ptr;
 
     StackAnimator () {};
-    virtual ~StackAnimator() {};
+    //virtual ~StackAnimator() {};
     
     virtual void animateContentComponentAdded (Component* newContent, int index) = 0;
     virtual void animateContentComponentRemoved (Component* contentRemoved, int index) = 0;
