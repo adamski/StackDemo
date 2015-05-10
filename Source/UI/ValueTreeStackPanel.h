@@ -16,31 +16,30 @@
 #include "AnimatedStackComponent.h"
 
 
-class ValueTreeStackPanel	:	public Component,
-								public ValueTreeListBox::Listener
+class ValueTreeStackPanel	:	public Component, public ValueTreeListBox::Listener
 {
-public:
+    public:
 
-	ValueTreeStackPanel (const ValueTree& nodeToUse);
-	~ValueTreeStackPanel ();
+        ValueTreeStackPanel (const ValueTree& nodeToUse);
+        ~ValueTreeStackPanel ();
 
-	AnimatedStackComponent* getStack ();
+        AnimatedStackComponent* getStack ();
 
-	void paint (Graphics& g);
+        void paint (Graphics& g);
 
-	void pushAfter (Component* newComponent, bool autoFocus, bool animate);
-	void pop ();
+        void pushAfter (Component* newComponent, bool autoFocus, bool animate);
+        void pop ();
 
-	void valueTreeListBoxItemDoubleClicked (ValueTreeListBox* source, const MouseEvent& e, int index, const ValueTree& itemNode);
-	void valueTreeListBoxItemClicked (ValueTreeListBox* source, const MouseEvent& e, int index, const ValueTree& itemNode);
-	void valueTreeListBoxContextNodeAssigned (ValueTreeListBox* source, const ValueTree& newContextNode);
+        void valueTreeListBoxItemDoubleClicked (ValueTreeListBox* source, const MouseEvent& e, int index, const ValueTree& itemNode);
+        void valueTreeListBoxItemClicked (ValueTreeListBox* source, const MouseEvent& e, int index, const ValueTree& itemNode);
+        void valueTreeListBoxContextNodeAssigned (ValueTreeListBox* source, const ValueTree& newContextNode);
 
-	void repopulateProperties ();
+        void repopulateProperties ();
 
-private:
+    private:
 
-	PropertyPanel		properties;
-	ValueTree			node;
+        PropertyPanel		properties;
+        ValueTree			node;
 
 };
 

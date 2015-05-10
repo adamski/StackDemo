@@ -14,6 +14,7 @@
 #include "StackNavigationList.h"
 #include "AnimatedStackComponent.h"
 #include "SlideAnimator.h"
+#include "ExpandAnimator.h"
 
 class ValueTreeListProp	:	public PropertyComponent
 {
@@ -96,10 +97,12 @@ void ValueTreeStackPanel::valueTreeListBoxItemDoubleClicked (ValueTreeListBox* s
     ValueTreeStackPanel* nextPanel = new ValueTreeStackPanel (itemNode);
     if (index == 2)
     {
-        SlideAnimator::Ptr slideAnimator = new SlideAnimator(350, 0.5, 1.0);
-        DBG ("Set new SlideAnimator");
-        slideAnimator->setStackComponent(getStack());
-        AnimatedStackHelpers::setStackAnimatorForComponent(slideAnimator, nextPanel);
+        Rectangle<int> rowPosition = source->getListBox().getRowPosition(index, false);
+        // SlideAnimator::Ptr slideAnimator = new SlideAnimator(350, 0.5, 1.0);
+        ExpandAnimator::Ptr expandAnimator = new ExpandAnimator(rowPosition, 1000, 0.5, 1.0);
+        DBG ("Set new ExpandAnimator");
+        expandAnimator->setStackComponent(getStack());
+        AnimatedStackHelpers::setStackAnimatorForComponent(expandAnimator, nextPanel);
     }
     pushAfter (nextPanel,true,true);
 }
