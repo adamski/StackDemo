@@ -14,7 +14,7 @@
 
 #include "../../JuceLibraryCode/JuceHeader.h"
 
-class ExpandAnimator : public StackAnimator 
+class ExpandAnimator : public StackAnimator, public ChangeListener 
 {
 public:
 
@@ -24,7 +24,9 @@ public:
             slideDuration (150),
             startSpeed (1.0),
             endSpeed (1.0)
-    {}
+    {
+        Desktop::getInstance().getAnimator().addChangeListener (this);
+    }
 
     ExpandAnimator (Rectangle<int> focusArea, int slideDuration, float startSpeed, float endSpeed)
         :   StackAnimator(),
@@ -32,7 +34,9 @@ public:
             slideDuration (slideDuration),
             startSpeed (startSpeed),
             endSpeed (endSpeed)
-    {}
+    {
+        Desktop::getInstance().getAnimator().addChangeListener (this);
+    }
 
     void refreshLayout ()
     {
@@ -69,6 +73,8 @@ public:
         int w = stackComponent->getWidth ();
         int h = stackComponent->getHeight ();
 
+        bool expanding = newIndex > oldIndex;
+
         Rectangle<int> bounds (0, 0, w, h);
 
         // Split the old panel in two (one above, one below the focusArea)
@@ -76,7 +82,7 @@ public:
         // Put the resulting Images into an ImageComponent
         // Animate the ImageComponents to move up and down
         // ?? Fade out the focus/row component
-        panel = stackComponent->getContentComponentAtIndex (oldIndex);
+        panel = stackComponent->getContentComponentAtIndex (expanding ? oldIndex : newIndex);
         if (panel != 0)
         {
             // panel->setVisible (true);
@@ -89,7 +95,8 @@ public:
             topSnapshot = new ImageComponent("Top Snapshot");
             topSnapshot->setImage (panel->createComponentSnapshot (topBounds));
 
-            Rectangle<int> bottomBounds (0, focusArea.getY()+(focusArea.getHeight()*2), w, h );
+            int bottomY = focusArea.getY()+(focusArea.getHeight()*2); 
+            Rectangle<int> bottomBounds (0, bottomY, w, h );
             bottomSnapshot = new ImageComponent("Bottom Snapshot");
             bottomSnapshot->setImage (panel->createComponentSnapshot (bottomBounds));
 
@@ -100,43 +107,72 @@ public:
             focusSnapshot->setImage (panel->createComponentSnapshot (actualFocusArea));
 
             stackComponent->addAndMakeVisible (topSnapshot);
+            if (! expanding) topBounds.setY (0-topBounds.getHeight());
             topSnapshot->setBounds (topBounds);
 
             stackComponent->addAndMakeVisible (bottomSnapshot);
             bottomBounds.setTop (focusArea.getHeight());
+            if (! expanding) bottomBounds.setY (bottomBounds.getHeight());
             bottomSnapshot->setBounds (bottomBounds);
 
             stackComponent->addAndMakeVisible (focusSnapshot);
             focusSnapshot->setBounds (actualFocusArea);
-            Desktop::getInstance().getAnimator().fadeOut (focusSnapshot, slideDuration);
+            if (expanding)
+                Desktop::getInstance().getAnimator().fadeOut (focusSnapshot, slideDuration);
+            else
+                Desktop::getInstance().getAnimator().fadeIn (focusSnapshot, slideDuration);
 
-            topBounds.setY (0-topBounds.getHeight());
+            if (expanding) topBounds.setY (0-topBounds.getHeight());
+            else topBounds.setY (0);
             Desktop::getInstance().getAnimator().animateComponent(topSnapshot, topBounds, 1.0f, slideDuration, true, startSpeed, endSpeed);
 
-            bottomBounds.setY (bottomBounds.getHeight());
+            if (expanding) bottomBounds.setY (bottomBounds.getHeight());
+            else bottomBounds.setY (bottomY);
             Desktop::getInstance().getAnimator().animateComponent(bottomSnapshot, bottomBounds, 1.0f, slideDuration, true, startSpeed, endSpeed);
 
+            //if (! expanding) panel->setVisible (false);
 
             // // Animate it to exit
             // bounds.setX ((oldIndex < newIndex) ? -w : w);
             // Desktop::getInstance().getAnimator().animateComponent(panel, bounds, 1.0f, slideDuration, true, startSpeed, endSpeed);
         }
 
-        // Expand the new component into the space between 
-        panel = stackComponent->getContentComponentAtIndex (newIndex);
-        if (panel != 0)
+        if (expanding)
         {
-            panel->setVisible (true);
-            //Desktop::getInstance().getAnimator().fadeIn (panel, 200);
+            panel = stackComponent->getContentComponentAtIndex (newIndex);
+            if (panel != 0)
+            {
+                panel->setVisible (true);
+                //Desktop::getInstance().getAnimator().fadeIn (panel, 200);
 
-            // // Place the panel in a suitable position for entry...
-            // bounds.setX ((newIndex < oldIndex) ? -w : w);
-            panel->setBounds (bounds);
-            //
-            // // Animate it to enter and fill the bounds.
-            // bounds.setX (0);
-            // Desktop::getInstance().getAnimator().animateComponent(panel, bounds, 1.0f, slideDuration, true, startSpeed, endSpeed);
+                // // Place the panel in a suitable position for entry...
+                // bounds.setX ((newIndex < oldIndex) ? -w : w);
+                panel->setBounds (bounds);
+                //
+                // // Animate it to enter and fill the bounds.
+                // bounds.setX (0);
+                // Desktop::getInstance().getAnimator().animateComponent(panel, bounds, 1.0f, slideDuration, true, startSpeed, endSpeed);
+            }
         }
+
+    }
+
+    void changeListenerCallback (ChangeBroadcaster *source) 
+    {
+        DBG ("Animator callback");
+        if (! Desktop::getInstance().getAnimator().isAnimating (topSnapshot)) finishedAnimating = true;
+        
+        if (finishedAnimating)
+        {
+            topSnapshot->setVisible (false);
+            bottomSnapshot->setVisible (false);
+            focusSnapshot->setVisible (false);
+
+            DBG ("removed snapshots");
+            finishedAnimating = false;
+            
+        }
+             
     }
 
     void setExpandDuration (int durationMs, double newStartSpeed, double newEndSpeed)
@@ -162,6 +198,7 @@ private:
     int slideDuration;
     double startSpeed;
     double endSpeed;
+    bool finishedAnimating = false;
 
     ScopedPointer<ImageComponent> topSnapshot;
     ScopedPointer<ImageComponent> bottomSnapshot;
