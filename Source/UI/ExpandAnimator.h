@@ -111,7 +111,7 @@ public:
         panel = stackComponent->getContentComponentAtIndex (expanding ? oldIndex : newIndex);
         if (panel != 0)
         {
-  
+            // TODO: Tidy this code up - work out whats going with the focusArea adjustments 
 
             Rectangle<int> topBounds (0, 0, bounds.getWidth(), focusArea.getY()+focusArea.getHeight());
             topSnapshot = new ImageComponent("Top Snapshot");
@@ -125,7 +125,6 @@ public:
             focusSnapshot = new ImageComponent("Focus Snapshot");
             DBG (focusArea.toString());
             Rectangle<int> actualFocusArea (0, focusArea.getY()+focusArea.getHeight(), bounds.getWidth(), focusArea.getHeight());
-            //actualFocusArea.setY (focusArea.getY()+focusArea.getHeight());
             focusSnapshot->setImage (panel->createComponentSnapshot (actualFocusArea));
 
             stackComponent->addAndMakeVisible (topSnapshot);
@@ -137,12 +136,17 @@ public:
             if (! expanding) bottomBounds.setY (bottomBounds.getHeight());
             bottomSnapshot->setBounds (bottomBounds);
 
-            stackComponent->addAndMakeVisible (focusSnapshot);
+            stackComponent->addChildComponent (focusSnapshot);
             focusSnapshot->setBounds (actualFocusArea);
             if (expanding)
+            {
+                focusSnapshot->setVisible (true);
                 Desktop::getInstance().getAnimator().fadeOut (focusSnapshot, slideDuration);
+            }
             else
+            {
                 Desktop::getInstance().getAnimator().fadeIn (focusSnapshot, slideDuration);
+            }
 
             if (expanding) topBounds.setY (0-topBounds.getHeight());
             else topBounds.setY (0);
@@ -151,15 +155,6 @@ public:
             if (expanding) bottomBounds.setY (bottomBounds.getHeight());
             else bottomBounds.setY (focusArea.getY()-focusArea.getHeight());
             Desktop::getInstance().getAnimator().animateComponent(bottomSnapshot, bottomBounds, 1.0f, slideDuration, true, startSpeed, endSpeed);
-
-            //if (! expanding)
-                //panel->setVisible (false);
-            //else
-                //panel->setBounds (bounds);
-
-            // // Animate it to exit
-            // bounds.setX ((oldIndex < newIndex) ? -w : w);
-            // Desktop::getInstance().getAnimator().animateComponent(panel, bounds, 1.0f, slideDuration, true, startSpeed, endSpeed);
         }
 
         if (expanding)
@@ -168,20 +163,9 @@ public:
             if (panel != 0)
             {
                 panel->setVisible (true);
-                //Desktop::getInstance().getAnimator().fadeIn (panel, 200);
-
-                // // Place the panel in a suitable position for entry...
-                // bounds.setX ((newIndex < oldIndex) ? -w : w);
                 panel->setBounds (bounds);
-
-                // set so the component is not deleted, 
-                // we will do this on the callback
-                panel->getProperties().set (StackComponentHelpers::deletionFlagId, false);
-
-                //
-                // // Animate it to enter and fill the bounds.
-                // bounds.setX (0);
-                // Desktop::getInstance().getAnimator().animateComponent(panel, bounds, 1.0f, slideDuration, true, startSpeed, endSpeed);
+                // panel->getProperties().set (StackComponentHelpers::deletionFlagId, false);
+                previousPanel = nullptr;
             }
         }
         else
@@ -190,24 +174,13 @@ public:
             previousPanel = stackComponent->getContentComponentAtIndex (newIndex);
             if (previousPanel.getComponent() != nullptr)
             {
-                //DBG ("______ set new / previous visible false");
-                //previousPanel->setVisible (true);
-                //previousPanel->setBounds (bounds);
-            }
-
-            if (deletedPanel != nullptr && deletedPanel->isVisible())
-            {
-                previousPanel->toBehind (deletedPanel);
-
+                previousPanel->setVisible (false);
             }
  
             panel = stackComponent->getContentComponentAtIndex (oldIndex);
-            if (panel != 0)
+            if (panel != nullptr)
             {
-                
-                DBG ("+++++ set old visible true");
-                //panel->setVisible (true); // <-- is this not working?
-                //panel->setBounds (bounds);
+                panel->setVisible (true); 
             }
         }
     }
@@ -225,25 +198,27 @@ public:
         
         if (previousPanel.getComponent() != nullptr && finishedAnimating)
         {
-
             if (deletedPanel != nullptr && deletedPanel->isVisible())
                 deletedPanel->setVisible (false);
-            if (previousPanel != nullptr && previousPanel->isVisible())
+            if (previousPanel != nullptr && !previousPanel->isShowing())
             {
                 previousPanel->setVisible (true);
-                //previousPanel = nullptr; // delete pointer we no longer need it
+                int currentIndex = stackComponent->indexOfContentComponent(previousPanel.getComponent());
+                DBG ("Index: " << currentIndex << ", size: " << stackComponent->getStackSize());
+                
+                if (currentIndex < stackComponent->getStackSize()-1)
+                {
+                    // hide next component if were going backwards and not deleted the last component 
+                    stackComponent->getContentComponentAtIndex (currentIndex + 1)->setVisible (false);
+                }
             }
-            //previousPanel->setBounds (bounds);
-            //Desktop::getInstance().getAnimator().fadeIn (previousPanel, 200);
             topSnapshot->setVisible (false);
             bottomSnapshot->setVisible (false);
             focusSnapshot->setVisible (false);
 
             DBG ("removed snapshots");
             finishedAnimating = false;
-            
         }
-             
     }
 
     void setExpandDuration (int durationMs, double newStartSpeed, double newEndSpeed)
