@@ -46,7 +46,6 @@ public:
             Component* panel = stackComponent->getContentComponentAtIndex (i);
             if (i == stackComponent->getStackFocusIndex())
             {
-                DBG (">>>>> refreshLayout setVisible");
                 panel->setVisible (true);
                 panel->setBounds (0, 0, stackComponent->getWidth(), stackComponent->getHeight());
             }
@@ -78,21 +77,15 @@ public:
         stackComponent->addAndMakeVisible (deletedPanel);
         deletedPanel->setBounds (bounds);
 
-        // put deletedPanel in front of the previous panel 
+        // put deletedPanel behind animations
         deletedPanel->toBack();
-        if (previousPanel != nullptr && previousPanel->isShowing())
-            previousPanel->toBehind (deletedPanel);
+
+        if (previousPanel.getComponent() != nullptr)
+        {
+            previousPanel->setVisible (false);
+        }
     }
     
-    /** 
-     * Get current bounds for the StackComponent
-     */
-    Rectangle<int> getCurrentBounds() const
-    {
-        int w = stackComponent->getWidth();
-        int h = stackComponent->getHeight();
-        return Rectangle<int> (0, 0, w, h);
-    }
 
     void animateStackFocusChange (Component* newFocusContent, int newIndex, int oldIndex)
     {
@@ -107,7 +100,6 @@ public:
         // Take a snapshot of each 
         // Put the resulting Images into an ImageComponent
         // Animate the ImageComponents to move up and down
-        // ?? Fade out the focus/row component
         panel = stackComponent->getContentComponentAtIndex (expanding ? oldIndex : newIndex);
         if (panel != 0)
         {
@@ -164,7 +156,6 @@ public:
             {
                 panel->setVisible (true);
                 panel->setBounds (bounds);
-                // panel->getProperties().set (StackComponentHelpers::deletionFlagId, false);
                 previousPanel = nullptr;
             }
         }
@@ -172,19 +163,37 @@ public:
         {
             DBG ("---- setting previousPanel");
             previousPanel = stackComponent->getContentComponentAtIndex (newIndex);
+ 
+            // TODO: these might need to checked against currentIndex and getStackSize
             if (previousPanel.getComponent() != nullptr)
             {
+                DBG ("previousPanel->setVisible (false);");
                 previousPanel->setVisible (false);
             }
  
             panel = stackComponent->getContentComponentAtIndex (oldIndex);
             if (panel != nullptr)
             {
+                DBG ("oldIndex  setVisible (true);");
                 panel->setVisible (true); 
             }
         }
     }
 
+
+    void setExpandDuration (int durationMs, double newStartSpeed, double newEndSpeed)
+    {
+        slideDuration = durationMs;
+        startSpeed = newStartSpeed;
+        endSpeed = newEndSpeed;
+    }
+
+private:
+
+    /**
+     * Check if we've finished an animation and remove the proxy image components 
+     * plus other stuff to make it work both for back button and breadcrumb navigation
+     */
     void changeListenerCallback (ChangeBroadcaster *source) 
     {
         if (! Desktop::getInstance().getAnimator().isAnimating (topSnapshot) && topSnapshot->getY() == 0)
@@ -199,7 +208,10 @@ public:
         if (previousPanel.getComponent() != nullptr && finishedAnimating)
         {
             if (deletedPanel != nullptr && deletedPanel->isVisible())
+            {
                 deletedPanel->setVisible (false);
+                deletedPanel.release(); 
+            }
             if (previousPanel != nullptr && !previousPanel->isShowing())
             {
                 previousPanel->setVisible (true);
@@ -221,24 +233,14 @@ public:
         }
     }
 
-    void setExpandDuration (int durationMs, double newStartSpeed, double newEndSpeed)
+    /** 
+     * Get current bounds for the StackComponent
+     */
+    Rectangle<int> getCurrentBounds() const
     {
-        slideDuration = durationMs;
-        startSpeed = newStartSpeed;
-        endSpeed = newEndSpeed;
-    }
-
-private:
-
-    Rectangle<int> getBoundsForContent (int index)
-    {
-        jassert (stackComponent != nullptr);
-
-        int w = stackComponent->getWidth ();
-        int h = stackComponent->getHeight ();
-        int x = (index - stackComponent->getStackFocusIndex()) * w;
-        Rectangle<int> rect (x,0,w,h);
-        return rect;
+        int w = stackComponent->getWidth();
+        int h = stackComponent->getHeight();
+        return Rectangle<int> (0, 0, w, h);
     }
 
     int slideDuration;
