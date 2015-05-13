@@ -23,7 +23,7 @@ public:
     
     virtual void animateContentComponentAdded (Component* newContent, int index) = 0;
     virtual void animateContentComponentRemoved (Component* contentRemoved, int index) = 0;
-    virtual void animateStackFocusChange(Component* newFocusContent, int newIndex, int oldIndex) = 0;
+    virtual void animateStackFocusChange (Component* newFocusContent, int newIndex, int oldIndex) = 0;
     virtual void refreshLayout() = 0; // TODO- make cpp file and put base implementation there: jassert (stackComponent != nullptr);
 
     void setStackComponent(StackComponent* stack)

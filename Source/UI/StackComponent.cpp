@@ -11,14 +11,8 @@
 
 #include "StackComponent.h"
 
-namespace StackComponentHelpers
-{
 
-    static const Identifier deletionFlagId ("StackComponent_Delete");
-
-};
-
-    StackComponent::StackComponent ()
+StackComponent::StackComponent ()
 :	stackFocusIndex (0),
     popAutoFocusOrder (autoFocusBeforeContentChange)
 {
@@ -275,7 +269,10 @@ void StackComponent::handleContentComponentRemoved (Component* contentRemoved, i
     removeChildComponent (contentRemoved);
 
     if (shouldContentComponentBeDeleted(contentRemoved))
+    {
+        DBG ("deleting component " << contentRemoved->getName());
         delete contentRemoved;
+    }
 }
 
 

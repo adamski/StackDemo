@@ -28,6 +28,14 @@
 	desired.
 
 */
+
+namespace StackComponentHelpers
+{
+
+    static const Identifier deletionFlagId ("StackComponent_Delete");
+
+};
+
 class StackComponent	:	public Component
 {
 public:

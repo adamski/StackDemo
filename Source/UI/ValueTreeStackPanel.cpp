@@ -99,7 +99,7 @@ void ValueTreeStackPanel::valueTreeListBoxItemDoubleClicked (ValueTreeListBox* s
     {
         Rectangle<int> rowPosition = source->getListBox().getRowPosition(index, false);
         // SlideAnimator::Ptr slideAnimator = new SlideAnimator(350, 0.5, 1.0);
-        ExpandAnimator::Ptr expandAnimator = new ExpandAnimator(rowPosition, 200, 0.5, 1.0);
+        ExpandAnimator::Ptr expandAnimator = new ExpandAnimator(rowPosition, 1000, 0.5, 1.0);
         DBG ("Set new ExpandAnimator");
         expandAnimator->setStackComponent(getStack());
         AnimatedStackHelpers::setStackAnimatorForComponent(expandAnimator, nextPanel);

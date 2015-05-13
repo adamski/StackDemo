@@ -59,38 +59,37 @@ public:
 
     void animateContentComponentAdded (Component *newContent, int index)
     {
+        //Desktop::getInstance().getAnimator().fadeIn (newContent, 200);
         
     }
 
-    /**
-     * save the image of the deleted component and display that
-     * so that the animation can play on top of it
-     */
     void animateContentComponentRemoved (Component* contentRemoved, int index)
     {
+        // Desktop::getInstance().getAnimator().fadeOut (contentRemoved, 200);
+        
+        contentRemoved->setVisible (true);
+        DBG ("!!!!! contentRemoved - saving image");
+        
         Rectangle<int> bounds = getCurrentBounds(); 
         // save deleted content image 
         deletedPanel = new ImageComponent("Deleted Panel Snapshot");
         Image contentRemovedImage = contentRemoved->createComponentSnapshot (contentRemoved->getLocalBounds(), false);
+        FileOutputStream fos (File("contentRemoved.png"));
+        PNGImageFormat pngImageFormat();
+        pngImageFormat.writeImageToStream (contentRemovedImage, fos);
 
         deletedPanel->setImage (contentRemovedImage);
 
-        stackComponent->addAndMakeVisible (deletedPanel);
+        DBG ("^^^^^ Show deleted panel");
+        deletedPanel->setVisible (true);
         deletedPanel->setBounds (bounds);
-
-        // put deletedPanel in front of the previous panel 
-        deletedPanel->toBack();
-        if (previousPanel != nullptr && previousPanel->isShowing())
-            previousPanel->toBehind (deletedPanel);
+        // Desktop::getInstance().getAnimator().fadeOut (deletedPanel, slideDuration);
     }
     
-    /** 
-     * Get current bounds for the StackComponent
-     */
     Rectangle<int> getCurrentBounds() const
     {
-        int w = stackComponent->getWidth();
-        int h = stackComponent->getHeight();
+        int w = stackComponent->getWidth ();
+        int h = stackComponent->getHeight ();
         return Rectangle<int> (0, 0, w, h);
     }
 
@@ -111,7 +110,11 @@ public:
         panel = stackComponent->getContentComponentAtIndex (expanding ? oldIndex : newIndex);
         if (panel != 0)
         {
-  
+            //panel->setVisible (true);
+
+            // Make sure the panel is currently on-screen to exit...
+            // bounds.setX (0);
+            // panel->setBounds (bounds);
 
             Rectangle<int> topBounds (0, 0, bounds.getWidth(), focusArea.getY()+focusArea.getHeight());
             topSnapshot = new ImageComponent("Top Snapshot");
@@ -194,12 +197,6 @@ public:
                 //previousPanel->setVisible (true);
                 //previousPanel->setBounds (bounds);
             }
-
-            if (deletedPanel != nullptr && deletedPanel->isVisible())
-            {
-                previousPanel->toBehind (deletedPanel);
-
-            }
  
             panel = stackComponent->getContentComponentAtIndex (oldIndex);
             if (panel != 0)
@@ -225,14 +222,11 @@ public:
         
         if (previousPanel.getComponent() != nullptr && finishedAnimating)
         {
+//            int w = stackComponent->getWidth ();
+//            int h = stackComponent->getHeight ();
+//            Rectangle<int> bounds (0, 0, w, h);
 
-            if (deletedPanel != nullptr && deletedPanel->isVisible())
-                deletedPanel->setVisible (false);
-            if (previousPanel != nullptr && previousPanel->isVisible())
-            {
-                previousPanel->setVisible (true);
-                //previousPanel = nullptr; // delete pointer we no longer need it
-            }
+            previousPanel->setVisible (true);
             //previousPanel->setBounds (bounds);
             //Desktop::getInstance().getAnimator().fadeIn (previousPanel, 200);
             topSnapshot->setVisible (false);
