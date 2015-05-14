@@ -164,7 +164,7 @@ public:
             DBG ("---- setting previousPanel");
             previousPanel = stackComponent->getContentComponentAtIndex (newIndex);
  
-            // TODO: these might need to checked against currentIndex and getStackSize
+            // TODO: these might need to be checked against index and getStackSize
             if (previousPanel.getComponent() != nullptr)
             {
                 DBG ("previousPanel->setVisible (false);");
@@ -201,16 +201,16 @@ private:
         
         if (finishedAnimating)
         {
-            DBG ("***** finishedAnimating");
+            //DBG ("***** finishedAnimating");
             if (! previousPanel.getComponent()) DBG ("previousPanel null");
         }
         
         if (previousPanel.getComponent() != nullptr && finishedAnimating)
         {
-            if (deletedPanel != nullptr && deletedPanel->isVisible())
+            if (deletedPanel != nullptr)
             {
                 deletedPanel->setVisible (false);
-                deletedPanel.release(); 
+                deletedPanel = nullptr;
             }
             if (previousPanel != nullptr && !previousPanel->isShowing())
             {
@@ -227,8 +227,9 @@ private:
             topSnapshot->setVisible (false);
             bottomSnapshot->setVisible (false);
             focusSnapshot->setVisible (false);
+            previousPanel = nullptr;
 
-            DBG ("removed snapshots");
+            //DBG ("removed snapshots");
             finishedAnimating = false;
         }
     }
