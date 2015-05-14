@@ -14,7 +14,7 @@
 #include "StackNavigationList.h"
 #include "AnimatedStackComponent.h"
 #include "SlideAnimator.h"
-#include "ExpandAnimator.h"
+#include "ShutterAnimator.h"
 
 class ValueTreeListProp	:	public PropertyComponent
 {
@@ -99,10 +99,10 @@ void ValueTreeStackPanel::valueTreeListBoxItemDoubleClicked (ValueTreeListBox* s
     {
         Rectangle<int> rowPosition = source->getListBox().getRowPosition(index, false);
         // SlideAnimator::Ptr slideAnimator = new SlideAnimator(350, 0.5, 1.0);
-        ExpandAnimator::Ptr expandAnimator = new ExpandAnimator(rowPosition, 300, 0.5, 1.0);
-        DBG ("Set new ExpandAnimator");
-        expandAnimator->setStackComponent(getStack());
-        AnimatedStackHelpers::setStackAnimatorForComponent(expandAnimator, nextPanel);
+        ShutterAnimator::Ptr shutterAnimator = new ShutterAnimator(rowPosition, 300, 0.5, 1.0);
+        DBG ("Set new ShutterAnimator");
+        shutterAnimator->setStackComponent(getStack());
+        AnimatedStackHelpers::setStackAnimatorForComponent(shutterAnimator, nextPanel);
     }
     pushAfter (nextPanel,true,true);
 }
