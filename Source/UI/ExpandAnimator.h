@@ -1,25 +1,25 @@
 /*
   ==============================================================================
 
-    ExpandAnimator.h
+    ShutterAnimator.h
     Created: 4 May 2015 10:40:25pm
     Author:  Adam Elemental
 
   ==============================================================================
 */
 
-#ifndef EXPANDANIMATOR_H_INCLUDED
-#define EXPANDANIMATOR_H_INCLUDED
+#ifndef SHUTTERANIMATOR_H_INCLUDED
+#define SHUTTERANIMATOR_H_INCLUDED
 
 
 #include "../../JuceLibraryCode/JuceHeader.h"
 #include "StackComponent.h"
 
-class ExpandAnimator : public StackAnimator, public ChangeListener 
+class ShutterAnimator : public StackAnimator, public ChangeListener 
 {
 public:
 
-    ExpandAnimator (Rectangle<int> focusArea)
+    ShutterAnimator (Rectangle<int> focusArea)
         :   StackAnimator(),
             focusArea (focusArea),
             slideDuration (150),
@@ -29,7 +29,7 @@ public:
         Desktop::getInstance().getAnimator().addChangeListener (this);
     }
 
-    ExpandAnimator (Rectangle<int> focusArea, int slideDuration, float startSpeed, float endSpeed)
+    ShutterAnimator (Rectangle<int> focusArea, int slideDuration, float startSpeed, float endSpeed)
         :   StackAnimator(),
             focusArea (focusArea),
             slideDuration (slideDuration),
@@ -94,13 +94,13 @@ public:
 
         Rectangle<int> bounds = getCurrentBounds();
 
-        bool expanding = newIndex > oldIndex;
+        bool opening = newIndex > oldIndex;
 
         // Split the old panel in two (one above, one below the focusArea)
         // Take a snapshot of each 
         // Put the resulting Images into an ImageComponent
         // Animate the ImageComponents to move up and down
-        panel = stackComponent->getContentComponentAtIndex (expanding ? oldIndex : newIndex);
+        panel = stackComponent->getContentComponentAtIndex (opening ? oldIndex : newIndex);
         if (panel != 0)
         {
             // TODO: Tidy this code up - work out whats going with the focusArea adjustments 
@@ -120,17 +120,17 @@ public:
             focusSnapshot->setImage (panel->createComponentSnapshot (actualFocusArea));
 
             stackComponent->addAndMakeVisible (topSnapshot);
-            if (! expanding) topBounds.setY (0-topBounds.getHeight());
+            if (! opening) topBounds.setY (0-topBounds.getHeight());
             topSnapshot->setBounds (topBounds);
 
             stackComponent->addAndMakeVisible (bottomSnapshot);
             bottomBounds.setTop (focusArea.getHeight());
-            if (! expanding) bottomBounds.setY (bottomBounds.getHeight());
+            if (! opening) bottomBounds.setY (bottomBounds.getHeight());
             bottomSnapshot->setBounds (bottomBounds);
 
             stackComponent->addChildComponent (focusSnapshot);
             focusSnapshot->setBounds (actualFocusArea);
-            if (expanding)
+            if (opening)
             {
                 focusSnapshot->setVisible (true);
                 Desktop::getInstance().getAnimator().fadeOut (focusSnapshot, slideDuration);
@@ -140,16 +140,16 @@ public:
                 Desktop::getInstance().getAnimator().fadeIn (focusSnapshot, slideDuration);
             }
 
-            if (expanding) topBounds.setY (0-topBounds.getHeight());
+            if (opening) topBounds.setY (0-topBounds.getHeight());
             else topBounds.setY (0);
             Desktop::getInstance().getAnimator().animateComponent(topSnapshot, topBounds, 1.0f, slideDuration, true, startSpeed, endSpeed);
 
-            if (expanding) bottomBounds.setY (bottomBounds.getHeight());
+            if (opening) bottomBounds.setY (bottomBounds.getHeight());
             else bottomBounds.setY (focusArea.getY()-focusArea.getHeight());
             Desktop::getInstance().getAnimator().animateComponent(bottomSnapshot, bottomBounds, 1.0f, slideDuration, true, startSpeed, endSpeed);
         }
 
-        if (expanding)
+        if (opening)
         {
             panel = stackComponent->getContentComponentAtIndex (newIndex);
             if (panel != 0)
@@ -181,7 +181,7 @@ public:
     }
 
 
-    void setExpandDuration (int durationMs, double newStartSpeed, double newEndSpeed)
+    void setDuration (int durationMs, double newStartSpeed, double newEndSpeed)
     {
         slideDuration = durationMs;
         startSpeed = newStartSpeed;
@@ -261,4 +261,4 @@ private:
 
 
 
-#endif  // EXPANDANIMATOR_H_INCLUDED
+#endif  // SHUTTERANIMATOR_H_INCLUDED
